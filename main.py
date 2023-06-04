@@ -1,11 +1,10 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
 from auth import auth
-from auth.dependencies import get_current_user, login_redirect
-from auth.models import User
 from config.variables import set_up
+from utils import clone_repo
 
 app = FastAPI()
 config = set_up()
@@ -29,9 +28,16 @@ if config['debug']:
     app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-@app.get("/")
-def home(current_user: User = Depends(get_current_user)):
-    if not current_user:
-        return login_redirect("/")
+@app.get("/clone")
+def clone(url: str):
+    name = clone_repo(url)
 
-    return current_user
+    return {
+        "message": f"Repo cloned",
+        "name": name
+    }
+
+
+@app.get("/run")
+def run(name: str):
+    pass

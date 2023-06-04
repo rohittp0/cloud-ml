@@ -4,3 +4,4 @@ venv
 .env
 *.db
 google_client_secret.json
+repos/
